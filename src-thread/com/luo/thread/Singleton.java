@@ -4,10 +4,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Singleton {
-	private Singleton instance=null;
-	public Singleton getInstance(){
-		synchronized (instance) {
-			if(instance==null){
+	
+	private static Singleton instance=null;
+	
+	public static Singleton getInstance(){
+//		synchronized (instance) {
+//			if(instance==null){
+//				instance=new Singleton();
+//			}
+//		}
+		if(instance==null){
+			synchronized (Singleton.class) {
 				instance=new Singleton();
 			}
 		}
