@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+http://www.springframework.org/schema/tx 
+http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+http://www.springframework.org/schema/aop  
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+		<!-- 启动注解 -->
+	<context:annotation-config />	
+	<!-- 配置扫描路径 -->
+	<context:component-scan base-package="com.luo.*" annotation-config="false" />
+	
+	<!--服务端-->
+	<!-- 将类为一个RMI服务 -->
+	<bean id="myRmi" class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<!-- 服务类 -->
+		<property name="service" ref="helloRmiServiceImpl" />
+		<!-- 服务名 -->
+		<property name="serviceName" value="helloRmi" />
+		<!-- 服务接口 -->
+		<property name="serviceInterface" value="com.luo.demo.springRMI.service.HelloRmiService" />
+		<!-- 服务端口 -->
+		<property name="registryPort" value="9999" />
+		<!-- 其他属性自己查看org.springframework.remoting.rmi.RmiServiceExporter的类,就知道支持的属性了-->
+	</bean>
+	
+    <!--客户端--> 
+    <bean id="myClient" class="org.springframework.remoting.rmi.RmiProxyFactoryBean"> 
+        <property name="serviceUrl" value="rmi://127.0.0.1:9999/helloRmi"/> 
+        <property name="serviceInterface" value="com.luo.demo.springRMI.service.HelloRmiService"/> 
+    </bean> 	
+</beans>
