@@ -10,11 +10,11 @@ public class BinaryTree {
 	}
 	
 	public void createBinaryTree(){
-		TreeNode newNodeB = new TreeNode(2,"B");  
-        TreeNode newNodeC = new TreeNode(3,"C");  
-        TreeNode newNodeD = new TreeNode(4,"D");  
-        TreeNode newNodeE = new TreeNode(5,"E");  
-        TreeNode newNodeF = new TreeNode(6,"F"); 
+		TreeNode newNodeB = new TreeNode(2,"B");
+        TreeNode newNodeC = new TreeNode(3,"C");
+        TreeNode newNodeD = new TreeNode(4,"D");
+        TreeNode newNodeE = new TreeNode(5,"E");
+        TreeNode newNodeF = new TreeNode(6,"F");
         root.leftChild=newNodeB;
         root.rightChild=newNodeC;
         newNodeB.leftChild=newNodeD;
@@ -124,18 +124,14 @@ public class BinaryTree {
 	}
 	
 	private static void visited(TreeNode node) {
-		node.isVisited=true;
 		System.out.println("key:"+node.key+"--data:"+node.data);;  
 	}
 
 	private class TreeNode{
 		private int key = 0;
 		private String data;
-		private boolean isVisited = false;
 		private TreeNode leftChild = null;
 		private TreeNode rightChild = null;
-		
-		public TreeNode() {}
 		/**
 		 * @param key 层
 		 * @param data 值

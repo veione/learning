@@ -1,5 +1,6 @@
 package com.luo.demo.netty.pojo;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
@@ -21,11 +22,23 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
+import org.jboss.netty.handler.codec.serialization.ClassResolvers;
+import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
+import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
+
+import com.luo.demo.netty.pojo.TestCase1.Person;
 
 import static org.jboss.netty.buffer.ChannelBuffers.*;
 
-public class TestCase1 {
-	class Person{
+/**
+ * 因为Person是TestCase3的内部类，也需要序列化
+ * @author hui.luo
+ *
+ */
+public class TestCase4 implements Serializable{
+	private static final long serialVersionUID = -4079978237109165981L;
+	class Person implements Serializable{
+		private static final long serialVersionUID = 7279610151571117702L;
 		private String name;
 		private int age;
 		public Person(String name, int age) {
@@ -48,6 +61,38 @@ public class TestCase1 {
 		}
 		public void setAge(int age) {
 			this.age = age;
+		}
+	}
+	class MyEncoder extends SimpleChannelHandler{
+		ChannelBuffer buf = dynamicBuffer();
+		@Override
+		public void writeRequested(ChannelHandlerContext ctx, MessageEvent e)
+				throws Exception {
+			Person p = (Person) e.getMessage();
+			buf.writeInt(p.getName().length());
+			buf.writeBytes(p.getName().getBytes());
+			buf.writeInt(p.getAge());
+			Channels.write(ctx, e.getFuture(), buf);
+		}
+	}
+	class MyDecoder extends FrameDecoder{
+		ChannelBuffer buf = dynamicBuffer();
+		@Override
+		protected Object decode(ChannelHandlerContext ctx, Channel channel,
+				ChannelBuffer buffer) throws Exception {			
+			if(buffer.readableBytes()<4){
+				return null;
+			}
+			if(buffer.readable()){
+				//读到，并写入buf
+				buffer.readBytes(buf, buffer.readableBytes());
+			}
+			
+			int nameLength = buf.readInt();
+			String name = new String(buf.readBytes(nameLength).array(),"gbk");
+			int age = buf.readInt();
+			
+			return new Person(name, age);
 		}
 	}
 	class TimeServerHandler extends SimpleChannelHandler{
@@ -81,40 +126,9 @@ public class TestCase1 {
 			e.getChannel().close();
 		}
 	}
-	class TimeDecoder extends FrameDecoder{
-		private final ChannelBuffer buf = dynamicBuffer();
-		@Override
-		protected Object decode(ChannelHandlerContext ctx, Channel channel,
-				ChannelBuffer buffer) throws Exception {
-			if(buffer.readableBytes()<4){
-				return null;
-			}
-			if(buffer.readable()){
-				//读到，并写入buf
-				buffer.readBytes(buf, buffer.readableBytes());
-			}
-			
-			int nameLength = buf.readInt();
-			String name = new String(buf.readBytes(nameLength).array(),"gbk");
-			int age = buf.readInt();
-			
-			return new Person(name, age);
-		}
-	}
-	class TimeEncoder extends SimpleChannelHandler{
-		private final ChannelBuffer buf = dynamicBuffer();
-		@Override
-		public void writeRequested(ChannelHandlerContext ctx, MessageEvent e)
-				throws Exception {
-			Person p = (Person) e.getMessage();
-			buf.writeInt(p.getName().length());
-			buf.writeBytes(p.getName().getBytes());
-			buf.writeInt(p.getAge());
-			//先写到buffer，然后由buffer写到channel
-			Channels.write(ctx, e.getFuture(), buf);
-			
-		}
-	}
+	/**
+	 * 发送消息
+	 */
 	public void runServer(){
 		ChannelFactory channelFactory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 		ServerBootstrap bootstrap = new ServerBootstrap(channelFactory);
@@ -123,7 +137,7 @@ public class TestCase1 {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new TimeEncoder());
+				pipeline.addLast("encoder", new MyEncoder());
 				pipeline.addLast("handler", new TimeServerHandler());
 				return pipeline;
 			}
@@ -143,7 +157,7 @@ public class TestCase1 {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("decoder", new TimeDecoder());//接受消息并解码
+				pipeline.addLast("decoder", new MyDecoder());//接受消息并解码
 				pipeline.addLast("handler", new TimeClientHandler());
 				return pipeline;
 			}
@@ -156,7 +170,7 @@ public class TestCase1 {
         bootstrap.releaseExternalResources();
 	}
 	public static void main(String[] args) {
-		TestCase1 tc = new TestCase1();
+		TestCase4 tc = new TestCase4();
 		tc.runServer();
 		tc.runClient();
 	}
