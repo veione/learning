@@ -1,9 +1,11 @@
 package com.luo.demo.nio;
 
+import java.io.IOException;
 import java.nio.channels.Channel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.Set;
 
 /**
  * 能够检测一到多个channel，并能够知晓channel是否为诸如读写事件做好准备的组件
@@ -13,6 +15,25 @@ import java.nio.channels.SocketChannel;
  */
 public class SelectorDemo {
 
+	public static void demo() throws IOException {
+		Selector selector = Selector.open();
+		SocketChannel socketChannel = SocketChannel.open();
+		socketChannel.configureBlocking(false);
+		SelectionKey key = socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+		while(true){
+			int readyChannels = selector.select();
+			if(readyChannels==0)continue;
+			Set<SelectionKey> selectedKeys = selector.selectedKeys();
+			for (SelectionKey selectionKey : selectedKeys) {
+				if(selectionKey.isAcceptable()){
+					
+				}else if(selectionKey.isConnectable()){
+					
+				}
+			}
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		SocketChannel socketChannel = SocketChannel.open();
 		

@@ -12,5 +12,6 @@ public class BasicTest {
 		System.out.println("string" instanceof Object);
 		System.out.println(new String("string") instanceof Object);
 //		System.out.println('A' instanceof Character);
+		System.out.println(null instanceof Object);
 	}
 }
