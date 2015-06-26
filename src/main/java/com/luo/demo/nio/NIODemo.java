@@ -6,6 +6,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class NIODemo {
+	/**
+	 * 这个while循环很傻
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception{
 		RandomAccessFile file = new RandomAccessFile(new File("C:/1.txt"),"rw");
 		FileChannel inchannel = file.getChannel();
@@ -20,6 +25,24 @@ public class NIODemo {
 			}
 			buf.clear();//4、清空buffer
 			bytesRead = inchannel.read(buf);
+		}
+		inchannel.close();
+		file.close();
+	}
+	
+	public static void main0(String[] args) throws Exception{
+		RandomAccessFile file = new RandomAccessFile(new File("C:/1.txt"),"rw");
+		FileChannel inchannel = file.getChannel();
+		ByteBuffer buf = ByteBuffer.allocate(48);
+		int bytesRead = 0;//1、首先读取数据到Buffer
+		while((bytesRead=inchannel.read(buf)) != -1){
+			System.out.println("read "+ bytesRead);
+			buf.flip();//2、然后反转Buffer(从写模式切换到读模式。在读模式下，可以读取之前写入到buffer的所有数据)
+			
+			while(buf.hasRemaining()){
+				System.out.println((char)buf.get());//3、接着再从Buffer中读取数
+			}
+			buf.clear();//4、清空buffer
 		}
 		inchannel.close();
 		file.close();
