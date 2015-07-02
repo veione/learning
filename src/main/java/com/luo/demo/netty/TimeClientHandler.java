@@ -17,7 +17,6 @@ import static org.jboss.netty.buffer.ChannelBuffers.*;
  */
 public class TimeClientHandler extends SimpleChannelHandler {
 	private final ChannelBuffer buf = dynamicBuffer();
-	
 	/**
 	 * 
 	 */

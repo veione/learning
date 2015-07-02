@@ -4,8 +4,9 @@ public class BinaryFind {
 	private static Integer [] array = {2, 4, 7, 8, 11,19, 22, 25, 34, 99};
 	public static void main(String[] args) {
 		System.out.println(find(0,array.length-1,11));
-//		System.out.println(search(7));
+		System.out.println(search(7));
 	}
+	
 	/**
 	 * 推荐的写法
 	 * @param a

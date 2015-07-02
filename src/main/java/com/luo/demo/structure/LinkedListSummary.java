@@ -37,13 +37,13 @@ public class LinkedListSummary {
 	private static Node reverseList(Node head) {
 		if(head==null||head.next==null)return head;  
         Node pre=null;
-        Node nex=null;  
-        while(head!=null){  
+        Node nex=null;
+        while(head!=null){
             nex=head.next;  
-            head.next=pre;  
-            pre=head;  
+            head.next=pre;
+            pre=head;
             head=nex;  
-        }  
+        }
         return pre; 
 	}
 	
