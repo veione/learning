@@ -6,6 +6,12 @@ public class FibonacciDemo {
 		System.out.println(fibonacci1(6)+""+fibonacci2(6));
 	}
 
+	/**
+	 * 时间复杂度：O(2的k次方)，指数级
+	 * 效率低是因为有重复计算，比如fibonacci2(1)计算每次都会计算
+	 * @param i
+	 * @return
+	 */
 	private static int fibonacci2(int i) {
 		if(i<2){
 			return 1;
@@ -13,6 +19,11 @@ public class FibonacciDemo {
 		return fibonacci2(i-1)+fibonacci2(i-2);
 	}
 
+	/**
+	 * O(1)*n = O(n)
+	 * @param i
+	 * @return
+	 */
 	private static int fibonacci1(int i) {
 		if(i<2){
 			return 1;
@@ -25,5 +36,4 @@ public class FibonacciDemo {
 		}
 		return sn;
 	}
-
 }
