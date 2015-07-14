@@ -1,40 +1,91 @@
 package com.luo.demo.test;
 
+/**
+ * 二叉有序树
+ * @author hui.luo
+ */
 public class BinaryTree {
-
-	public static void main(String[] args) {
-		Tree root = new Tree(1);
-		Tree t1 = new Tree(2);
-		root.setLeft(t1);
-		
+	private TreeNode root;
+	private int size;
+	
+	public int getMax(){
+		TreeNode curNode = root;
+		while (curNode.rightChild!=null) {
+			curNode = curNode.rightChild;
+		}
+		return curNode.data;
 	}
 
-	static class Tree{
+	public void prePrint(){
+		prePrint0(root);
+	}
+
+	private void prePrint0(TreeNode node) {
+		if(node!=null){
+			System.out.print(node.data);
+			prePrint0(node.leftChild);
+			prePrint0(node.rightChild);
+		}
+	}
+
+	private void midPrint() {
+		midPrint0(root);
+	}
+
+	private void midPrint0(TreeNode node) {
+		if(node!=null){
+			prePrint0(node.leftChild);
+			System.out.print(node.data);
+			prePrint0(node.rightChild);
+		}
+	}
+
+	private void createBinaryTreeByArr(int[] data) {
+		for (int d : data) {
+			insert(d);
+		}
+	}
+	
+	private void insert(int value) {
+		if(root==null)root = new TreeNode(value);
+		TreeNode curNode = root;
+		TreeNode parentNode;
+		while (true) {
+			parentNode = curNode;
+			if(value<curNode.data){
+				curNode = curNode.leftChild;
+				if(curNode==null){
+					parentNode.leftChild=new TreeNode(value);
+					break;
+				}
+			}else{
+				curNode = curNode.rightChild;
+				if(curNode==null){
+					parentNode.rightChild = new TreeNode(value);
+					break;
+				}
+			}
+		}
+		++size;
+	}
+
+	private class TreeNode{
 		private int data;
-		private Tree left;
-		private Tree right;
-		
-		public Tree(int data) {
-			super();
-			this.data = data;
+		private TreeNode leftChild = null;
+		private TreeNode rightChild = null;
+		/**
+		 * @param data 值
+		 */
+		public TreeNode(int data){
+			this.data=data;
 		}
-		public int getData() {
-			return data;
-		}
-		public void setData(int data) {
-			this.data = data;
-		}
-		public Tree getLeft() {
-			return left;
-		}
-		public void setLeft(Tree left) {
-			this.left = left;
-		}
-		public Tree getRight() {
-			return right;
-		}
-		public void setRight(Tree right) {
-			this.right = right;
-		}
+	}
+	
+	public static void main(String[] args) {
+		int[] data = {0,1,2,3,4,5,6,7,8,9};
+		BinaryTree tree = new BinaryTree();
+		tree.createBinaryTreeByArr(data);
+		tree.prePrint();
+//		tree.midPrint();
 	}
 }
