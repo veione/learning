@@ -12,7 +12,7 @@ public class Filter2 {
         List<String> G7 = Arrays
             .asList("USA", "Japan", "France", "Germany", "Italy", "U.K.", "Canada");
 
-        List<String> l = G7.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(","));
-        l.forEach(System.out::println);
+//        List<String> l = G7.stream().map(x -> x.toUpperCase()).collect(Collectors.joining(","));
+//        l.forEach(System.out::println);
     }
 }
